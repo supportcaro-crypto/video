@@ -3,94 +3,417 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pluto Video Engine - تجربة</title>
+<title>بلوتو | محرك الفيديو</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=IBM+Plex+Serif:wght@600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --ink: #121319;
+    --panel: #1a1c25;
+    --panel-2: #15161d;
+    --line: #2a2c38;
+    --gold: #d9a441;
+    --teal: #3f8f88;
+    --text: #eceef2;
+    --muted: #8b8d9d;
+    --ok: #6fcf97;
+    --err: #e3685f;
+    --warn: #d9a441;
+    --radius: 10px;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    background: var(--ink);
+    color: var(--text);
+    font-family: 'IBM Plex Sans Arabic', sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
   body {
-    font-family: 'Segoe UI', Tahoma, Arial, sans-serif;
-    background: #0f0f14;
-    color: #eee;
     min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 16px;
+    padding: 0 0 40px;
   }
-  header {
-    width: 100%;
-    max-width: 900px;
-    text-align: center;
-    margin-bottom: 16px;
-  }
-  h1 { font-size: 1.4rem; margin-bottom: 4px; }
-  p.sub { color: #999; font-size: 0.9rem; }
-  .status {
-    display: inline-block;
-    margin-top: 8px;
-    padding: 4px 12px;
-    border-radius: 20px;
-    font-size: 0.8rem;
-    background: #1a3a1a;
-    color: #4ade80;
-  }
-  .frame-wrap {
-    width: 100%;
-    max-width: 900px;
-    background: #1a1a22;
-    border-radius: 12px;
+
+  .topbar {
+    position: relative;
+    padding: 28px 20px 22px;
+    border-bottom: 1px solid var(--line);
     overflow: hidden;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.4);
   }
-  iframe {
-    width: 100%;
-    height: 900px;
-    border: none;
-    display: block;
-  }
-  .fallback {
-    margin-top: 16px;
-    font-size: 0.85rem;
-    color: #999;
-    text-align: center;
-  }
-  .fallback a {
-    color: #60a5fa;
-    text-decoration: none;
-  }
-  .loading {
+
+  .topbar::before {
+    content: "";
     position: absolute;
-    color: #666;
-    font-size: 0.9rem;
-    padding: 40px;
-    text-align: center;
+    inset: 0 0 auto 0;
+    height: 4px;
+    background: repeating-linear-gradient(
+      -55deg,
+      var(--gold) 0 18px,
+      var(--teal) 18px 36px
+    );
+  }
+
+  .wordmark {
+    font-family: 'IBM Plex Serif', serif;
+    font-weight: 700;
+    font-size: 1.5rem;
+    letter-spacing: 0.2px;
+    direction: ltr;
+    text-align: right;
+    color: var(--text);
+  }
+
+  .wordmark span { color: var(--gold); }
+
+  .tagline {
+    margin-top: 6px;
+    font-size: 0.88rem;
+    color: var(--muted);
+    max-width: 520px;
+  }
+
+  main {
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 24px 20px 0;
+  }
+
+  section {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 20px;
+    margin-bottom: 18px;
+  }
+
+  .field { margin-bottom: 16px; }
+  .field:last-child { margin-bottom: 0; }
+
+  .field label {
+    display: block;
+    font-size: 0.82rem;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+
+  textarea, input[type="number"] {
     width: 100%;
+    background: var(--panel-2);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 11px 12px;
+    color: var(--text);
+    font-family: inherit;
+    font-size: 0.92rem;
+    direction: ltr;
+    text-align: left;
+  }
+
+  textarea { resize: vertical; min-height: 64px; line-height: 1.5; }
+  textarea:focus, input:focus {
+    outline: 2px solid var(--gold);
+    outline-offset: 1px;
+  }
+
+  .grid3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+  }
+
+  .grid3 label { font-size: 0.74rem; }
+  .grid3 input { text-align: center; direction: ltr; padding: 9px 6px; }
+
+  details {
+    margin-bottom: 16px;
+    border-top: 1px solid var(--line);
+    padding-top: 14px;
+  }
+  summary {
+    cursor: pointer;
+    font-size: 0.85rem;
+    color: var(--muted);
+    list-style: none;
+  }
+  summary::-webkit-details-marker { display: none; }
+  summary::before { content: "＋ "; color: var(--gold); }
+  details[open] summary::before { content: "－ "; }
+  details > .grid3 { margin-top: 14px; }
+
+  .generate-btn {
+    width: 100%;
+    padding: 15px;
+    border: none;
+    border-radius: 8px;
+    background: var(--gold);
+    color: #1a1306;
+    font-family: inherit;
+    font-size: 0.98rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.08s ease, background 0.15s ease;
+  }
+  .generate-btn:active { transform: scale(0.98); }
+  .generate-btn:disabled { background: #4a4a4a; color: #999; cursor: not-allowed; }
+
+  .preview-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+  }
+
+  .rec {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--muted);
+    letter-spacing: 0.4px;
+  }
+
+  .rec-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: #4a4a4a;
+  }
+  .rec.active .rec-dot {
+    background: var(--err);
+    animation: pulse 1.1s infinite;
+  }
+  .rec.active { color: var(--err); }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.35; }
+  }
+
+  .preview-frame {
+    background: var(--panel-2);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    min-height: 180px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  .preview-frame video { width: 100%; display: block; }
+
+  .preview-placeholder {
+    color: var(--muted);
+    font-size: 0.85rem;
+    text-align: center;
+    padding: 30px 16px;
+    direction: rtl;
+  }
+
+  .log-panel {
+    background: #0d0e13;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 4px 14px;
+    height: 200px;
+    overflow-y: auto;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.74rem;
+    direction: ltr;
+    text-align: left;
+  }
+
+  .log-panel .empty {
+    color: #4a4c58;
+    padding: 14px 0;
+  }
+
+  .log-line {
+    padding: 7px 0;
+    border-bottom: 1px solid #1c1e27;
+    display: flex;
+    gap: 8px;
+  }
+  .log-line:last-child { border-bottom: none; }
+  .log-t { color: #4a4c58; flex-shrink: 0; }
+  .log-m { word-break: break-word; }
+  .log-m.info { color: #7fa8d9; }
+  .log-m.ok { color: var(--ok); }
+  .log-m.err { color: var(--err); }
+  .log-m.warn { color: var(--gold); }
+
+  .section-title {
+    font-size: 0.8rem;
+    color: var(--muted);
+    margin-bottom: 14px;
   }
 </style>
 </head>
 <body>
 
-<header>
-  <h1>🎬 Pluto Video Engine</h1>
-  <p class="sub">صفحة تجربة مؤقتة - توليد فيديو من نص عبر CogVideoX-5B</p>
-  <span class="status">● متصل بـ HuggingFace Space</span>
-</header>
-
-<div class="frame-wrap">
-  <iframe
-    src="https://mahmoudtele-pluto-video-engine.hf.space"
-    title="Pluto Video Engine"
-    allow="clipboard-write"
-    loading="lazy">
-  </iframe>
+<div class="topbar">
+  <div class="wordmark">Pluto <span>Video</span> Engine</div>
+  <p class="tagline">حوّل وصف نصي إلى مقطع فيديو قصير. الاتصال مباشر بمحرك التوليد، وكل خطوة من الطلب ظاهرة أول بأول.</p>
 </div>
 
-<p class="fallback">
-  إذا ما ظهرت الواجهة بالأعلى، افتحها مباشرة من هون:
-  <br>
-  <a href="https://mahmoudtele-pluto-video-engine.hf.space" target="_blank">
-    https://mahmoudtele-pluto-video-engine.hf.space
-  </a>
-</p>
+<main>
+
+  <section>
+    <p class="section-title">وصف المشهد</p>
+    <div class="field">
+      <label for="prompt">شو بتحب يصير بالفيديو؟ (اكتب بالإنكليزي لنتيجة أدق)</label>
+      <textarea id="prompt">a golden retriever running on a beach at sunset</textarea>
+    </div>
+    <div class="field">
+      <label for="negPrompt">تفاصيل ما بدك ياها بالمشهد (اختياري)</label>
+      <textarea id="negPrompt" placeholder="blurry, low quality, distorted"></textarea>
+    </div>
+
+    <details>
+      <summary>إعدادات التوليد</summary>
+      <div class="grid3">
+        <div>
+          <label>الفريمات</label>
+          <input id="numFrames" type="number" value="25" min="9" max="49" step="8">
+        </div>
+        <div>
+          <label>Guidance</label>
+          <input id="guidance" type="number" value="6" min="1" max="15" step="0.5">
+        </div>
+        <div>
+          <label>الخطوات</label>
+          <input id="steps" type="number" value="25" min="20" max="100" step="5">
+        </div>
+      </div>
+    </details>
+
+    <button class="generate-btn" id="genBtn">ولّد الفيديو</button>
+  </section>
+
+  <section>
+    <div class="preview-head">
+      <p class="section-title" style="margin:0;">المعاينة</p>
+      <div class="rec" id="recIndicator"><span class="rec-dot"></span><span>REC</span></div>
+    </div>
+    <div class="preview-frame" id="previewFrame">
+      <p class="preview-placeholder">بعد ما تولّد، الفيديو رح يظهر هون</p>
+    </div>
+  </section>
+
+  <section>
+    <p class="section-title">سجل العملية</p>
+    <div class="log-panel" id="logBox">
+      <div class="empty">بانتظار أول طلب...</div>
+    </div>
+  </section>
+
+</main>
+
+<script type="module">
+  import { Client } from "https://cdn.jsdelivr.net/npm/@gradio/client/dist/index.js";
+
+  const SPACE_ID = "Mahmoudtele/pluto-video-engine";
+
+  const logBox = document.getElementById("logBox");
+  const genBtn = document.getElementById("genBtn");
+  const previewFrame = document.getElementById("previewFrame");
+  const recIndicator = document.getElementById("recIndicator");
+
+  function log(msg, type = "info") {
+    const empty = logBox.querySelector(".empty");
+    if (empty) empty.remove();
+
+    const time = new Date().toLocaleTimeString("en-GB");
+    const line = document.createElement("div");
+    line.className = "log-line";
+    line.innerHTML = `<span class="log-t">${time}</span><span class="log-m ${type}">${msg}</span>`;
+    logBox.appendChild(line);
+    logBox.scrollTop = logBox.scrollHeight;
+  }
+
+  function setRecording(on) {
+    recIndicator.classList.toggle("active", on);
+  }
+
+  window.addEventListener("DOMContentLoaded", () => {
+    genBtn.addEventListener("click", generateVideo);
+  });
+  genBtn.addEventListener("click", generateVideo);
+
+  async function generateVideo() {
+    genBtn.disabled = true;
+    setRecording(true);
+    previewFrame.innerHTML = '<p class="preview-placeholder">جاري التوليد...</p>';
+
+    const prompt = document.getElementById("prompt").value;
+    const negPrompt = document.getElementById("negPrompt").value;
+    const numFrames = Number(document.getElementById("numFrames").value);
+    const guidance = Number(document.getElementById("guidance").value);
+    const steps = Number(document.getElementById("steps").value);
+
+    log("جاري الاتصال بالمحرك...", "info");
+
+    let client;
+    try {
+      client = await Client.connect(SPACE_ID);
+      log("تم الاتصال بنجاح", "ok");
+    } catch (err) {
+      log("فشل الاتصال: " + err.message, "err");
+      genBtn.disabled = false;
+      setRecording(false);
+      return;
+    }
+
+    log('جاري إرسال الطلب — "' + prompt + '"', "info");
+
+    try {
+      const submission = client.submit("/generate_video", [
+        prompt, negPrompt, numFrames, guidance, steps,
+      ]);
+
+      for await (const event of submission) {
+        if (event.type === "status") {
+          const st = event.status;
+          if (st.stage === "pending") {
+            log("بانتظار الدور — الموقع " + (st.position ?? "?") + " من " + (st.queue_size ?? "?"), "warn");
+          } else if (st.stage === "generating") {
+            log("وصل الطلب للمحرك، جاري التوليد الآن", "ok");
+          } else if (st.stage === "complete") {
+            log("اكتمل التوليد", "ok");
+          } else if (st.stage === "error") {
+            log("خطأ من المحرك: " + (event.message || JSON.stringify(st)), "err");
+          } else {
+            log("حالة: " + JSON.stringify(st), "info");
+          }
+        } else if (event.type === "data") {
+          log("استلمنا ملف الفيديو", "ok");
+          const fileData = event.data[0];
+          const videoUrl = fileData.url || (fileData.value && fileData.value.url);
+          if (videoUrl) {
+            previewFrame.innerHTML = "";
+            const vid = document.createElement("video");
+            vid.src = videoUrl;
+            vid.controls = true;
+            previewFrame.appendChild(vid);
+            log("جاهز للعرض", "ok");
+          } else {
+            log("ما قدرت أستخرج رابط الفيديو من الرد: " + JSON.stringify(fileData), "warn");
+          }
+        }
+      }
+    } catch (err) {
+      log("خطأ أثناء الإرسال أو الاستقبال: " + err.message, "err");
+      previewFrame.innerHTML = '<p class="preview-placeholder">صار خطأ. شوف السجل فوق.</p>';
+    }
+
+    genBtn.disabled = false;
+    setRecording(false);
+  }
+</script>
 
 </body>
 </html>
