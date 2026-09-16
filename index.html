@@ -317,6 +317,7 @@
   import { Client } from "https://cdn.jsdelivr.net/npm/@gradio/client/dist/index.js";
 
   const SPACE_ID = "Mahmoudtele/pluto-video-engine";
+  const HF_TOKEN = "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";
 
   const logBox = document.getElementById("logBox");
   const genBtn = document.getElementById("genBtn");
@@ -359,7 +360,7 @@
 
     let client;
     try {
-      client = await Client.connect(SPACE_ID);
+      client = await Client.connect(SPACE_ID, { hf_token: HF_TOKEN });
       log("تم الاتصال بنجاح", "ok");
     } catch (err) {
       log("فشل الاتصال: " + err.message, "err");
